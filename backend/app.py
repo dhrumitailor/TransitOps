@@ -11,9 +11,11 @@ from routes.dashboard_routes import dashboard_bp
 from routes.maintenance_routes import maintenance_bp
 from routes.fuel_routes import fuel_bp
 from routes.expense_routes import expense_bp
-
+from flask_jwt_extended import JWTManager
+from auth.auth_routes import auth_bp
 
 app = Flask(__name__)
+jwt = JWTManager(app)
 app.config.from_object(Config)
 
 CORS(app)
@@ -40,6 +42,10 @@ app.register_blueprint(
 )
 app.register_blueprint(
     expense_bp,
+    url_prefix="/api"
+)
+app.register_blueprint(
+    auth_bp,
     url_prefix="/api"
 )
 
