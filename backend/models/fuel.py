@@ -17,14 +17,20 @@ class FuelLog(db.Model):
     trip_id = db.Column(
         db.Integer,
         db.ForeignKey("trips.id"),
+        nullable=True
+    )
+
+    fuel_date = db.Column(
+        db.Date,
         nullable=False
     )
 
-    fuel_station = db.Column(
-        db.String(100)
+    liters = db.Column(
+        db.Float,
+        nullable=False
     )
 
-    liters = db.Column(
+    price_per_liter = db.Column(
         db.Float,
         nullable=False
     )
@@ -34,9 +40,13 @@ class FuelLog(db.Model):
         nullable=False
     )
 
-    date = db.Column(
-        db.Date,
+    odometer = db.Column(
+        db.Float,
         nullable=False
+    )
+
+    fuel_station = db.Column(
+        db.String(150)
     )
 
     created_at = db.Column(
@@ -65,12 +75,12 @@ class FuelLog(db.Model):
             "id": self.id,
             "vehicle_id": self.vehicle_id,
             "trip_id": self.trip_id,
-            "fuel_station": self.fuel_station,
+            "fuel_date": self.fuel_date.isoformat(),
             "liters": self.liters,
+            "price_per_liter": self.price_per_liter,
             "cost": self.cost,
-            "date": self.date.isoformat(),
-            "created_at": self.created_at.isoformat() if self.created_at else None
+            "odometer": self.odometer,
+            "fuel_station": self.fuel_station,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat()
         }
-
-    def __repr__(self):
-        return f"<FuelLog {self.id}>"

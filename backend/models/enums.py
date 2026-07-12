@@ -28,7 +28,7 @@ class DriverStatus(Enum):
 # ===========================
 
 class TripStatus(Enum):
-    DRAFT = "Draft"
+    SCHEDULED = "Scheduled"
     DISPATCHED = "Dispatched"
     IN_PROGRESS = "In Progress"
     COMPLETED = "Completed"

@@ -61,9 +61,14 @@ class Trip(db.Model):
         nullable=True
     )
 
+    remarks = db.Column(
+        db.Text,
+        nullable=True
+    )
+
     status = db.Column(
         db.Enum(TripStatus),
-        default=TripStatus.DRAFT,
+        default=TripStatus.SCHEDULED,
         nullable=False
     )
 
@@ -119,6 +124,7 @@ class Trip(db.Model):
             "revenue": self.revenue,
             "dispatch_time": self.dispatch_time.isoformat() if self.dispatch_time else None,
             "completion_time": self.completion_time.isoformat() if self.completion_time else None,
+            "remarks": self.remarks,
             "status": self.status.value,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None

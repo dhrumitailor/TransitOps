@@ -2,7 +2,7 @@ from datetime import datetime
 
 from database import db
 from .enums import DriverStatus
-
+from datetime import datetime
 
 class Driver(db.Model):
     __tablename__ = "drivers"
