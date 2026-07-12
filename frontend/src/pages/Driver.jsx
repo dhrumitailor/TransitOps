@@ -1,11 +1,29 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import { useState } from "react";
 import SearchBar from "../components/SearchBar";
 import Table from "../components/Table";
-
+import { useEffect, useState } from "react";
+import {
+  getDrivers,
+  addDriver,
+  updateDriver,
+  deleteDriver,
+} from "../services/driverService";
 function Driver() {
   const [search, setSearch] = useState("");
+  const [drivers, setDrivers] = useState([]);
+  useEffect(() => {
+  loadDrivers();
+}, []);
+
+const loadDrivers = async () => {
+  try {
+    const response = await getDrivers();
+    setDrivers(response.data);
+  } catch (error) {
+    console.error("Error fetching drivers:", error);
+  }
+};
 
   const columns = [
     "Name",
