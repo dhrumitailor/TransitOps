@@ -66,10 +66,11 @@ function Driver() {
       </>,
     ],
   ];
-
+const filteredData = data.filter((driver) =>
+  driver[0].toLowerCase().includes(search.toLowerCase())
+);
   return (
-    <div className="container mt-4">
-
+<div className="container py-4">
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-4">
 
@@ -83,24 +84,31 @@ function Driver() {
           </p>
         </div>
 
-        <button className="btn btn-primary">
-          + Add Driver
-        </button>
+        <button className="btn btn-primary px-4">
+    + Add Driver
+</button>
 
       </div>
 
       {/* Search */}
-      <SearchBar
-        placeholder="Search Drivers..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      <div className="card shadow-sm border-0">
 
-      {/* Table */}
-      <Table
-        columns={columns}
-        data={data}
-      />
+  <div className="card-body">
+
+    <SearchBar
+      placeholder="Search Drivers..."
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+    />
+
+    <Table
+  columns={columns}
+  data={filteredData}
+/>
+
+  </div>
+
+</div>
 
     </div>
   );

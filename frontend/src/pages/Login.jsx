@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function Login() {
+    const navigate = useNavigate();
   return (
     <div
       className="d-flex justify-content-center align-items-center vh-100"
@@ -41,9 +43,12 @@ function Login() {
           />
         </div>
 
-        <button className="btn btn-primary w-100">
-          Login
-        </button>
+        <button
+  className="btn btn-primary w-100"
+  onClick={() => navigate("/dashboard")}
+>
+  Login
+</button>
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Sidebar() {
   return (
     <div
@@ -7,28 +9,56 @@ function Sidebar() {
         minHeight: "100vh",
       }}
     >
-      <h3 className="mb-4">TransitOps</h3>
+      <h3 className="mb-4">🚚 TransitOps</h3>
 
       <ul className="nav flex-column">
 
         <li className="nav-item mb-3">
-          Dashboard
+          <Link className="nav-link text-white" to="/dashboard">
+            Dashboard
+          </Link>
         </li>
 
         <li className="nav-item mb-3">
-          Vehicles
+          <Link className="nav-link text-white" to="/vehicles">
+            Vehicles
+          </Link>
         </li>
 
         <li className="nav-item mb-3">
-          Drivers
+          <Link className="nav-link text-white" to="/drivers">
+            Drivers
+          </Link>
         </li>
 
         <li className="nav-item mb-3">
-          Trips
+          <Link className="nav-link text-white" to="/trips">
+            Trips
+          </Link>
+        </li>
+
+        <li className="nav-item mb-3">
+          <Link className="nav-link text-white" to="/maintenance">
+            Maintenance
+          </Link>
+        </li>
+
+        <li className="nav-item mb-3">
+          <Link className="nav-link text-white" to="/fuel">
+            Fuel
+          </Link>
+        </li>
+
+        <li className="nav-item mb-3">
+          <Link className="nav-link text-white" to="/expenses">
+            Expenses
+          </Link>
         </li>
 
         <li className="nav-item">
-          Reports
+          <Link className="nav-link text-white" to="/reports">
+            Reports
+          </Link>
         </li>
 
       </ul>
