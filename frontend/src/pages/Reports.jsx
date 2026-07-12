@@ -1,3 +1,5 @@
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 import SearchBar from "../components/SearchBar";
 import Table from "../components/Table";
 import { useState } from "react";
@@ -67,8 +69,17 @@ function Reports() {
     report[0].toLowerCase().includes(search.toLowerCase())
   );
 
-  return (
-    <div className="container-lg py-4">
+return (
+    
+  <div className="d-flex">
+
+    <Sidebar />
+
+    <div className="flex-grow-1">
+
+      <Navbar />
+
+      <div className="container-fluid p-4">
 
       {/* Header */}
       <p className="text-end text-muted">
@@ -93,7 +104,7 @@ function Reports() {
     Export CSV
   </button>
   <span className="badge bg-secondary">
-  Report Generated: Today
+  Report Generated: <br/><br/>Today
 </span>
 
   <button className="btn btn-danger">
@@ -255,7 +266,7 @@ function Reports() {
         </div>
 
       </div>
-
+    </div></div>
     </div>
   );
 }

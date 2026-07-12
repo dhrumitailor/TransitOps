@@ -1,3 +1,5 @@
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 import { useState } from "react";
 import SearchBar from "../components/SearchBar";
 import Table from "../components/Table";
@@ -71,8 +73,16 @@ function Fuel() {
     fuel[0].toLowerCase().includes(search.toLowerCase())
   );
 
-  return (
-    <div className="container-lg py-4">
+    return (
+  <div className="d-flex">
+
+    <Sidebar />
+
+    <div className="flex-grow-1">
+
+      <Navbar />
+
+      <div className="container-fluid p-4">
 
       <div className="d-flex justify-content-between align-items-center mb-4">
 
@@ -108,6 +118,9 @@ function Fuel() {
           />
 
         </div>
+
+      </div>
+      </div>
 
       </div>
 
