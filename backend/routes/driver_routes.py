@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
 
+from middleware.auth import role_required
 from services.driver_service import DriverService
 
 driver_bp = Blueprint(
@@ -9,6 +11,12 @@ driver_bp = Blueprint(
 
 
 @driver_bp.route("/drivers", methods=["GET"])
+@jwt_required()
+@role_required(
+    "Admin",
+    "Fleet Manager",
+    "Safety Officer"
+)
 def get_drivers():
 
     search = request.args.get("search")
@@ -28,6 +36,12 @@ def get_drivers():
 
 
 @driver_bp.route("/drivers/<int:driver_id>", methods=["GET"])
+@jwt_required()
+@role_required(
+    "Admin",
+    "Fleet Manager",
+    "Safety Officer"
+)
 def get_driver(driver_id):
 
     driver = DriverService.get_by_id(driver_id)
@@ -42,6 +56,11 @@ def get_driver(driver_id):
 
 
 @driver_bp.route("/drivers", methods=["POST"])
+@jwt_required()
+@role_required(
+    "Admin",
+    "Fleet Manager"
+)
 def create_driver():
 
     data = request.get_json()
@@ -71,6 +90,11 @@ def create_driver():
 
 
 @driver_bp.route("/drivers/<int:driver_id>", methods=["PUT"])
+@jwt_required()
+@role_required(
+    "Admin",
+    "Fleet Manager"
+)
 def update_driver(driver_id):
 
     driver = DriverService.get_by_id(driver_id)
@@ -93,6 +117,8 @@ def update_driver(driver_id):
 
 
 @driver_bp.route("/drivers/<int:driver_id>", methods=["DELETE"])
+@jwt_required()
+@role_required("Admin")
 def delete_driver(driver_id):
 
     driver = DriverService.get_by_id(driver_id)
