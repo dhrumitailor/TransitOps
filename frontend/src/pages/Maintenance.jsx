@@ -1,11 +1,42 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import { useState } from "react";
-import SearchBar from "../components/SearchBar";
+import { useEffect, useState } from "react";import SearchBar from "../components/SearchBar";
 import Table from "../components/Table";
-
+import {
+  getMaintenance,
+  addMaintenance,
+  updateMaintenance,
+  deleteMaintenance,
+} from "../services/maintenanceService";
 function Maintenance() {
   const [search, setSearch] = useState("");
+  const [maintenance, setMaintenance] = useState([]);
+
+const [showModal, setShowModal] = useState(false);
+const [editingMaintenanceId, setEditingMaintenanceId] = useState(null);
+
+const [maintenanceForm, setMaintenanceForm] = useState({
+  vehicle_id: "",
+  maintenance_type: "",
+  description: "",
+  service_date: "",
+  cost: "",
+});
+useEffect(() => {
+  loadMaintenance();
+}, []);
+
+async function loadMaintenance() {
+  try {
+    const response = await getMaintenance();
+
+    // Change this if your API returns { items: [...] }
+    setMaintenance(response.items);
+
+  } catch (error) {
+    console.error(error);
+  }
+}
 
   const columns = [
     "Vehicle",
@@ -16,60 +47,30 @@ function Maintenance() {
     "Actions",
   ];
 
-  const data = [
-    [
-      "Van-01",
-      "Oil Change",
-      "12-07-2026",
-      "₹2,500",
-      <span className="badge bg-success">Completed</span>,
-      <>
-        <button className="btn btn-outline-primary btn-sm me-2">
-          Edit
-        </button>
+  const data = maintenance.map((item) => [
+  item.vehicle_id,
+  item.maintenance_type,
+  item.service_date,
+  `₹${item.cost}`,
 
-        <button className="btn btn-outline-danger btn-sm">
-          Delete
-        </button>
-      </>,
-    ],
+  <span className="badge bg-success">
+    Completed
+  </span>,
 
-    [
-      "Truck-02",
-      "Brake Repair",
-      "13-07-2026",
-      "₹8,500",
-      <span className="badge bg-warning text-dark">Pending</span>,
-      <>
-        <button className="btn btn-outline-primary btn-sm me-2">
-          Edit
-        </button>
+  <>
+    <button
+      className="btn btn-outline-primary btn-sm me-2"
+    >
+      Edit
+    </button>
 
-        <button className="btn btn-outline-danger btn-sm">
-          Delete
-        </button>
-      </>,
-    ],
-
-    [
-      "Mini Van",
-      "Tyre Change",
-      "14-07-2026",
-      "₹4,200",
-      <span className="badge bg-info text-dark">
-        In Progress
-      </span>,
-      <>
-        <button className="btn btn-outline-primary btn-sm me-2">
-          Edit
-        </button>
-
-        <button className="btn btn-outline-danger btn-sm">
-          Delete
-        </button>
-      </>,
-    ],
-  ];
+    <button
+      className="btn btn-outline-danger btn-sm"
+    >
+      Delete
+    </button>
+  </>,
+]);
 
   const filteredData = data.filter((maintenance) =>
     maintenance[0].toLowerCase().includes(search.toLowerCase())
@@ -98,8 +99,10 @@ function Maintenance() {
           </p>
         </div>
 
-        <button className="btn btn-primary px-4">
-          + Add Maintenance
+<button
+  className="btn btn-primary px-4"
+  onClick={() => setShowModal(true)}
+>          + Add Maintenance
         </button>
 
       </div>
