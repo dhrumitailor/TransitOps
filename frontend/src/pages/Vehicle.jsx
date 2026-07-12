@@ -1,8 +1,25 @@
+import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import api from "../api/axios";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 
 function Vehicle() {
+    const [vehicles, setVehicles] = useState([]);
+
+    useEffect(() => {
+  const fetchVehicles = async () => {
+    try {
+      const response = await api.get("/vehicles");
+      setVehicles(response.data.items);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchVehicles();
+}, []);
+
   return (
     <div className="d-flex">
       <Sidebar />
@@ -134,47 +151,21 @@ function Vehicle() {
   </thead>
 
   <tbody>
-
-    <tr>
-      <td>V001</td>
-      <td>GJ01AB1234</td>
-      <td>Tata Ace</td>
-      <td>Rahul Patel</td>
-      <td>1.5 Ton</td>
+  {vehicles.map((vehicle) => (
+    <tr key={vehicle.id}>
+      <td>{vehicle.id}</td>
+      <td>{vehicle.registration_number}</td>
+      <td>{vehicle.vehicle_name}</td>
+      <td>-</td>
+      <td>{vehicle.maximum_load_capacity}</td>
       <td>
         <span className="badge bg-success">
-          Available
+          {vehicle.status || "Available"}
         </span>
       </td>
     </tr>
-
-    <tr>
-      <td>V002</td>
-      <td>GJ05CD5678</td>
-      <td>Ashok Leyland</td>
-      <td>Amit Shah</td>
-      <td>10 Ton</td>
-      <td>
-        <span className="badge bg-warning text-dark">
-          On Trip
-        </span>
-      </td>
-    </tr>
-
-    <tr>
-      <td>V003</td>
-      <td>GJ18EF9012</td>
-      <td>Mahindra Pickup</td>
-      <td>Neha Joshi</td>
-      <td>2 Ton</td>
-      <td>
-        <span className="badge bg-danger">
-          Maintenance
-        </span>
-      </td>
-    </tr>
-
-  </tbody>
+  ))}
+</tbody>
 
 </table>
 

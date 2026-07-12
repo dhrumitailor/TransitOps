@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import api from "../api/axios";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import DashboardCard from "../components/DashboardCard";
@@ -6,6 +8,32 @@ import ChartCard from "../components/ChartCard";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function Dashboard() {
+    const [dashboard, setDashboard] = useState({
+  total_vehicles: 0,
+  available_vehicles: 0,
+  vehicles_on_trip: 0,
+  vehicles_in_maintenance: 0,
+  total_drivers: 0,
+  total_trips: 0,
+  completed_trips: 0,
+  total_revenue: 0,
+  total_fuel_cost: 0,
+  total_expenses: 0,
+  profit: 0,
+});
+
+useEffect(() => {
+  const fetchDashboard = async () => {
+    try {
+      const response = await api.get("/dashboard");
+      setDashboard(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchDashboard();
+}, []);
   return (
   <div className="d-flex">
 
@@ -64,7 +92,7 @@ function Dashboard() {
           <div className="col-lg-3 col-md-6">
             <DashboardCard
   title="Total Vehicles"
-  value="24"
+ value={dashboard.total_vehicles}
   color="#0d6efd"
 />
           </div>
@@ -72,7 +100,7 @@ function Dashboard() {
           <div className="col-lg-3 col-md-6">
             <DashboardCard
   title="Active Trips"
-  value="8"
+value={dashboard.total_trips}
   color="#198754"
 />
           </div>
@@ -80,7 +108,7 @@ function Dashboard() {
           <div className="col-lg-3 col-md-6">
             <DashboardCard
   title="Available Drivers"
-  value="16"
+  value={dashboard.total_drivers}
   color="#ffc107"
 />
           </div>
@@ -88,7 +116,7 @@ function Dashboard() {
           <div className="col-lg-3 col-md-6">
 <DashboardCard
   title="Maintenance Due"
-  value="3"
+  value={dashboard.vehicles_in_maintenance}
   color="#dc3545"
 />
           </div>
@@ -96,7 +124,7 @@ function Dashboard() {
           <div className="col-lg-3 col-md-6">
   <DashboardCard
     title="Trips Today"
-    value="9"
+    value={dashboard.completed_trips}
     color="#17a2b8"
   />
 </div>
@@ -104,16 +132,8 @@ function Dashboard() {
 <div className="col-lg-3 col-md-6">
   <DashboardCard
     title="Fuel Cost"
-    value="₹26K"
+    value={`₹${dashboard.total_fuel_cost}`}
     color="#6c757d"
-  />
-</div>
-
-<div className="col-lg-3 col-md-6">
-  <DashboardCard
-    title="Fleet Utilization"
-    value="81%"
-    color="#198754"
   />
 </div>
 
