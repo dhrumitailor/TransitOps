@@ -1,16 +1,7 @@
-function App() {
-  return (
-    <div className="container mt-5">
-      <h1>TransitOps</h1>
-      <p>Frontend Setup Complete 🚀</p>
-    </div>
-  );
-}
-import Driver from "./pages/Driver";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-  return <Driver />;
+  return <AppRoutes />;
 }
-
 
 export default App;
