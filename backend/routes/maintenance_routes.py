@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
 
+from middleware.auth import role_required
 from services.maintenance_service import MaintenanceService
 
 maintenance_bp = Blueprint(
@@ -9,6 +11,12 @@ maintenance_bp = Blueprint(
 
 
 @maintenance_bp.route("/maintenance", methods=["GET"])
+@jwt_required()
+@role_required(
+    "Admin",
+    "Fleet Manager",
+    "Safety Officer"
+)
 def get_all():
 
     maintenance = MaintenanceService.get_all()
@@ -20,6 +28,12 @@ def get_all():
 
 
 @maintenance_bp.route("/maintenance/<int:id>", methods=["GET"])
+@jwt_required()
+@role_required(
+    "Admin",
+    "Fleet Manager",
+    "Safety Officer"
+)
 def get_one(id):
 
     item = MaintenanceService.get_by_id(id)
@@ -31,6 +45,11 @@ def get_one(id):
 
 
 @maintenance_bp.route("/maintenance", methods=["POST"])
+@jwt_required()
+@role_required(
+    "Admin",
+    "Fleet Manager"
+)
 def create():
 
     item = MaintenanceService.create(
@@ -41,6 +60,11 @@ def create():
 
 
 @maintenance_bp.route("/maintenance/<int:id>", methods=["PUT"])
+@jwt_required()
+@role_required(
+    "Admin",
+    "Fleet Manager"
+)
 def update(id):
 
     item = MaintenanceService.get_by_id(id)
@@ -57,6 +81,8 @@ def update(id):
 
 
 @maintenance_bp.route("/maintenance/<int:id>", methods=["DELETE"])
+@jwt_required()
+@role_required("Admin")
 def delete(id):
 
     item = MaintenanceService.get_by_id(id)
