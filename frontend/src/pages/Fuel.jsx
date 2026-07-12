@@ -1,11 +1,41 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import Table from "../components/Table";
-
+import {
+  getFuel,
+  addFuel,
+  deleteFuel,
+} from "../services/fuelService";
 function Fuel() {
   const [search, setSearch] = useState("");
+  const [fuel, setFuel] = useState([]);
+
+const [showModal, setShowModal] = useState(false);
+
+const [fuelForm, setFuelForm] = useState({
+  vehicle_id: "",
+  trip_id: "",
+  fuel_date: "",
+  liters: "",
+  price_per_liter: "",
+  cost: "",
+  odometer: "",
+  fuel_station: "",
+});
+useEffect(() => {
+  loadFuel();
+}, []);
+
+async function loadFuel() {
+  try {
+    const response = await getFuel();
+    setFuel(response); // change to response.items only if your API returns {items:[]}
+  } catch (error) {
+    console.error(error);
+  }
+}
 
   const columns = [
     "Vehicle",
@@ -16,59 +46,55 @@ function Fuel() {
     "Actions",
   ];
 
-  const data = [
-    [
-      "Van-01",
-      "40 L",
-      "₹3,200",
-      "12-07-2026",
-      "12 km/L",
-      <>
-        <button className="btn btn-outline-primary btn-sm me-2">
-          Edit
-        </button>
+  const data = fuel.map((item) => [
+  item.vehicle_id,
+  `${item.liters} L`,
+  `₹${item.cost}`,
+  item.fuel_date,
+  item.odometer,
 
-        <button className="btn btn-outline-danger btn-sm">
-          Delete
-        </button>
-      </>,
-    ],
+  <>
+    <button
+      className="btn btn-outline-danger btn-sm"
+      onClick={() => handleDeleteFuel(item.id)}
+    >
+      Delete
+    </button>
+  </>,
+]);
+async function handleAddFuel() {
+  try {
+    await addFuel(fuelForm);
 
-    [
-      "Truck-02",
-      "80 L",
-      "₹6,500",
-      "13-07-2026",
-      "8 km/L",
-      <>
-        <button className="btn btn-outline-primary btn-sm me-2">
-          Edit
-        </button>
+    setShowModal(false);
 
-        <button className="btn btn-outline-danger btn-sm">
-          Delete
-        </button>
-      </>,
-    ],
+    setFuelForm({
+      vehicle_id: "",
+      trip_id: "",
+      fuel_date: "",
+      liters: "",
+      price_per_liter: "",
+      cost: "",
+      odometer: "",
+      fuel_station: "",
+    });
 
-    [
-      "Mini Van",
-      "35 L",
-      "₹2,800",
-      "14-07-2026",
-      "13 km/L",
-      <>
-        <button className="btn btn-outline-primary btn-sm me-2">
-          Edit
-        </button>
+    loadFuel();
+  } catch (error) {
+    console.error(error);
+    alert("Failed to add fuel log");
+  }
+}
+async function handleDeleteFuel(id) {
+  if (!window.confirm("Delete this fuel log?")) return;
 
-        <button className="btn btn-outline-danger btn-sm">
-          Delete
-        </button>
-      </>,
-    ],
-  ];
-
+  try {
+    await deleteFuel(id);
+    loadFuel();
+  } catch (error) {
+    console.error(error);
+  }
+}
   const filteredData = data.filter((fuel) =>
     fuel[0].toLowerCase().includes(search.toLowerCase())
   );
@@ -96,8 +122,10 @@ function Fuel() {
           </p>
         </div>
 
-        <button className="btn btn-primary px-4">
-          + Add Fuel Log
+<button
+  className="btn btn-primary px-4"
+  onClick={() => setShowModal(true)}
+>          + Add Fuel Log
         </button>
 
       </div>
@@ -123,7 +151,115 @@ function Fuel() {
       </div>
 
       </div>
+{showModal && (
+  <div className="modal d-block" style={{ background: "rgba(0,0,0,.5)" }}>
+    <div className="modal-dialog">
+      <div className="modal-content">
 
+        <div className="modal-header">
+          <h5>Add Fuel Log</h5>
+          <button
+            className="btn-close"
+            onClick={() => setShowModal(false)}
+          />
+        </div>
+
+        <div className="modal-body">
+
+          <input
+            className="form-control mb-2"
+            placeholder="Vehicle ID"
+            value={fuelForm.vehicle_id}
+            onChange={(e) =>
+              setFuelForm({ ...fuelForm, vehicle_id: e.target.value })
+            }
+          />
+
+          <input
+            className="form-control mb-2"
+            placeholder="Trip ID"
+            value={fuelForm.trip_id}
+            onChange={(e) =>
+              setFuelForm({ ...fuelForm, trip_id: e.target.value })
+            }
+          />
+
+          <input
+            type="date"
+            className="form-control mb-2"
+            value={fuelForm.fuel_date}
+            onChange={(e) =>
+              setFuelForm({ ...fuelForm, fuel_date: e.target.value })
+            }
+          />
+
+          <input
+            className="form-control mb-2"
+            placeholder="Liters"
+            value={fuelForm.liters}
+            onChange={(e) =>
+              setFuelForm({ ...fuelForm, liters: e.target.value })
+            }
+          />
+
+          <input
+            className="form-control mb-2"
+            placeholder="Price Per Liter"
+            value={fuelForm.price_per_liter}
+            onChange={(e) =>
+              setFuelForm({ ...fuelForm, price_per_liter: e.target.value })
+            }
+          />
+
+          <input
+            className="form-control mb-2"
+            placeholder="Cost"
+            value={fuelForm.cost}
+            onChange={(e) =>
+              setFuelForm({ ...fuelForm, cost: e.target.value })
+            }
+          />
+
+          <input
+            className="form-control mb-2"
+            placeholder="Odometer"
+            value={fuelForm.odometer}
+            onChange={(e) =>
+              setFuelForm({ ...fuelForm, odometer: e.target.value })
+            }
+          />
+
+          <input
+            className="form-control"
+            placeholder="Fuel Station"
+            value={fuelForm.fuel_station}
+            onChange={(e) =>
+              setFuelForm({ ...fuelForm, fuel_station: e.target.value })
+            }
+          />
+
+        </div>
+
+        <div className="modal-footer">
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowModal(false)}
+          >
+            Cancel
+          </button>
+
+          <button
+            className="btn btn-primary"
+            onClick={handleAddFuel}
+          >
+            Save
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }
