@@ -37,14 +37,14 @@ async function loadExpenses() {
   }
 }
 
-  const columns = [
-    "Expense Type",
-    "Vehicle",
-    "Amount",
-    "Date",
-    "Status",
-    "Actions",
-  ];
+ const columns = [
+  "Vehicle",
+  "Category",
+  "Description",
+  "Amount",
+  "Date",
+  "Actions",
+];
 
   const data = expenses.map((item) => [
   item.vehicle_id,
@@ -64,7 +64,21 @@ async function loadExpenses() {
 ]);
 async function handleAddExpense() {
   try {
-    await addExpense(expenseForm);
+
+    const data = {
+      vehicle_id: Number(expenseForm.vehicle_id),
+      trip_id: Number(expenseForm.trip_id),
+      category: expenseForm.category,
+      description: expenseForm.description,
+      amount: Number(expenseForm.amount),
+      expense_date: expenseForm.expense_date,
+    };
+
+    console.log(data);
+
+    const response = await addExpense(data);
+
+console.log("API RESPONSE:", response);
 
     setShowModal(false);
 
@@ -78,9 +92,10 @@ async function handleAddExpense() {
     });
 
     loadExpenses();
+
   } catch (error) {
     console.error(error);
-    alert("Failed to add expense.");
+    alert("Failed to add expense");
   }
 }
 async function handleDeleteExpense(id) {
@@ -95,8 +110,10 @@ async function handleDeleteExpense(id) {
 }
 
   const filteredData = data.filter((expense) =>
-    expense[0].toLowerCase().includes(search.toLowerCase())
-  );
+  String(expense[0])
+    .toLowerCase()
+    .includes(search.toLowerCase())
+);
 
   return (
   <div className="d-flex">
