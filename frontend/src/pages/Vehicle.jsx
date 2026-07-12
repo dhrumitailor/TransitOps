@@ -22,69 +22,161 @@ function Vehicle() {
 
           <div className="card shadow-sm p-4">
 
-            <div className="row mb-3">
+<div className="row mb-4">
 
-              <div className="col-md-4">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Search Vehicle"
-                />
-              </div>
+  <div className="col-md-4">
+    <input
+      type="text"
+      className="form-control"
+      placeholder="Search Vehicle..."
+    />
+  </div>
 
-            </div>
+  <div className="col-md-3">
+    <select className="form-select">
+      <option>Vehicle Type</option>
+      <option>Truck</option>
+      <option>Van</option>
+      <option>Pickup</option>
+    </select>
+  </div>
 
-            <table className="table table-hover">
+  <div className="col-md-3">
+    <select className="form-select">
+      <option>Status</option>
+      <option>Available</option>
+      <option>On Trip</option>
+      <option>Maintenance</option>
+    </select>
+  </div>
 
-              <thead>
+  <div className="col-md-2">
+    <button className="btn btn-primary w-100">
+      Search
+    </button>
+  </div>
 
-                <tr>
-                  <th>ID</th>
-                  <th>Vehicle</th>
-                  <th>Model</th>
-                  <th>Status</th>
-                </tr>
+</div>
 
-              </thead>
+  <div className="row mb-4">
 
-              <tbody>
+  <div className="col-md-4">
+    <div className="card shadow-sm border-start border-success border-4">
+      <div className="card-body">
+        <h6>Total Vehicles</h6>
+        <h3>24</h3>
+      </div>
+    </div>
+  </div>
 
-                <tr>
-                  <td>V001</td>
-                  <td>Tata Ace</td>
-                  <td>2024</td>
-                  <td>
-                    <span className="badge bg-success">
-                      Available
-                    </span>
-                  </td>
-                </tr>
+  <div className="col-md-4">
+    <div className="card shadow-sm border-start border-warning border-4">
+      <div className="card-body">
+        <h6>On Trip</h6>
+        <h3>8</h3>
+      </div>
+    </div>
+  </div>
 
-                <tr>
-                  <td>V002</td>
-                  <td>Ashok Leyland</td>
-                  <td>2023</td>
-                  <td>
-                    <span className="badge bg-warning text-dark">
-                      On Trip
-                    </span>
-                  </td>
-                </tr>
+  <div className="col-md-4">
+    <div className="card shadow-sm border-start border-danger border-4">
+      <div className="card-body">
+        <h6>Maintenance</h6>
+        <h3>3</h3>
+      </div>
+    </div>
+  </div>
 
-                <tr>
-                  <td>V003</td>
-                  <td>Mahindra Pickup</td>
-                  <td>2022</td>
-                  <td>
-                    <span className="badge bg-danger">
-                      Maintenance
-                    </span>
-                  </td>
-                </tr>
+</div>   
 
-              </tbody>
+<div className="row mb-4">
 
-            </table>
+  <div className="col-md-4">
+    <div className="card shadow-sm border-start border-primary border-4">
+      <div className="card-body">
+        <h6>Total Vehicles</h6>
+        <h3>53</h3>
+      </div>
+    </div>
+  </div>
+
+  <div className="col-md-4">
+    <div className="card shadow-sm border-start border-success border-4">
+      <div className="card-body">
+        <h6>Available</h6>
+        <h3>42</h3>
+      </div>
+    </div>
+  </div>
+
+  <div className="col-md-4">
+    <div className="card shadow-sm border-start border-danger border-4">
+      <div className="card-body">
+        <h6>Maintenance</h6>
+        <h3>5</h3>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<table className="table table-hover align-middle">
+
+  <thead className="table-dark">
+    <tr>
+      <th>ID</th>
+      <th>Registration No.</th>
+      <th>Vehicle</th>
+      <th>Driver</th>
+      <th>Capacity</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td>V001</td>
+      <td>GJ01AB1234</td>
+      <td>Tata Ace</td>
+      <td>Rahul Patel</td>
+      <td>1.5 Ton</td>
+      <td>
+        <span className="badge bg-success">
+          Available
+        </span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>V002</td>
+      <td>GJ05CD5678</td>
+      <td>Ashok Leyland</td>
+      <td>Amit Shah</td>
+      <td>10 Ton</td>
+      <td>
+        <span className="badge bg-warning text-dark">
+          On Trip
+        </span>
+      </td>
+    </tr>
+
+    <tr>
+      <td>V003</td>
+      <td>GJ18EF9012</td>
+      <td>Mahindra Pickup</td>
+      <td>Neha Joshi</td>
+      <td>2 Ton</td>
+      <td>
+        <span className="badge bg-danger">
+          Maintenance
+        </span>
+      </td>
+    </tr>
+
+  </tbody>
+
+</table>
 
           </div>
 

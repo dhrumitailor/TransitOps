@@ -33,6 +33,16 @@ function Login() {
           />
         </div>
 
+        <div className="mb-3">
+  <label className="form-label">Role</label>
+
+  <select className="form-select">
+    <option>Admin</option>
+    <option>Manager</option>
+    <option>Driver</option>
+  </select>
+</div>
+
         <div className="mb-4">
           <label className="form-label">Password</label>
 
@@ -43,12 +53,21 @@ function Login() {
           />
         </div>
 
+        <div className="text-center mt-3">
+  <a href="#">Forgot Password?</a>
+</div>
+
         <button
   className="btn btn-primary w-100"
   onClick={() => navigate("/dashboard")}
 >
   Login
 </button>
+
+<div className="text-center mt-3">
+  <a href="#">Forgot Password?</a>
+</div>
+
       </div>
     </div>
   );

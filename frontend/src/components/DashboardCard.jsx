@@ -1,8 +1,23 @@
-function DashboardCard({ title, value }) {
+function DashboardCard({ title, value, color }) {
   return (
-    <div className="card shadow-sm p-3">
-      <h6>{title}</h6>
-      <h2>{value}</h2>
+    <div
+      className="card shadow-sm border-0"
+      style={{
+        borderLeft: `6px solid ${color}`,
+        borderRadius: "12px",
+      }}
+    >
+      <div className="card-body">
+
+        <h6 className="text-muted">
+          {title}
+        </h6>
+
+        <h2 className="fw-bold">
+          {value}
+        </h2>
+
+      </div>
     </div>
   );
 }
