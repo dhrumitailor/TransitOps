@@ -1,8 +1,10 @@
+import { useEffect, useState } from "react";
+
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import SearchBar from "../components/SearchBar";
 import Table from "../components/Table";
-import { useEffect, useState } from "react";
+
 import {
   getDrivers,
   addDriver,
@@ -12,18 +14,20 @@ import {
 function Driver() {
   const [search, setSearch] = useState("");
   const [drivers, setDrivers] = useState([]);
-  useEffect(() => {
+useEffect(() => {
   loadDrivers();
 }, []);
 
-const loadDrivers = async () => {
+async function loadDrivers() {
   try {
     const response = await getDrivers();
-    setDrivers(response.data);
+    setDrivers(response.items);
   } catch (error) {
-    console.error("Error fetching drivers:", error);
+    console.error(error);
   }
-};
+}
+
+
 
   const columns = [
     "Name",
@@ -34,58 +38,35 @@ const loadDrivers = async () => {
     "Actions",
   ];
 
-  const data = [
-    [
-      "Alex",
-      "DL12345",
-      "9876543210",
-      <span className="badge bg-success">Available</span>,
-      "96",
-      <>
-        <button className="btn btn-warning btn-sm me-2">
-          Edit
-        </button>
+const data = drivers.map((driver) => [
+  driver.name,
+  driver.license_number,
+  driver.contact_number,
 
-        <button className="btn btn-danger btn-sm">
-          Delete
-        </button>
-      </>,
-    ],
+  <span
+    className={`badge ${
+      driver.status === "Available"
+        ? "bg-success"
+        : driver.status === "On Trip"
+        ? "bg-primary"
+        : "bg-danger"
+    }`}
+  >
+    {driver.status}
+  </span>,
 
-    [
-      "John",
-      "DL56789",
-      "9876501234",
-      <span className="badge bg-primary">On Trip</span>,
-      "91",
-      <>
-        <button className="btn btn-warning btn-sm me-2">
-          Edit
-        </button>
+  driver.safety_score,
 
-        <button className="btn btn-danger btn-sm">
-          Delete
-        </button>
-      </>,
-    ],
+  <>
+    <button className="btn btn-warning btn-sm me-2">
+      Edit
+    </button>
 
-    [
-      "David",
-      "DL88991",
-      "9876512345",
-      <span className="badge bg-danger">Suspended</span>,
-      "85",
-      <>
-        <button className="btn btn-warning btn-sm me-2">
-          Edit
-        </button>
-
-        <button className="btn btn-danger btn-sm">
-          Delete
-        </button>
-      </>,
-    ],
-  ];
+    <button className="btn btn-danger btn-sm">
+      Delete
+    </button>
+  </>,
+]);
 const filteredData = data.filter((driver) =>
   driver[0].toLowerCase().includes(search.toLowerCase())
 );
