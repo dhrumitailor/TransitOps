@@ -1,11 +1,98 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import Table from "../components/Table";
-
+import {
+  getTrips,
+  addTrip,
+  updateTrip,
+  deleteTrip,
+} from "../services/tripService";
 function Trip() {
   const [search, setSearch] = useState("");
+  const [trips, setTrips] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+const [editingTripId, setEditingTripId] = useState(null);
+
+const [tripForm, setTripForm] = useState({
+  vehicle_id: "",
+  driver_id: "",
+  source: "",
+  destination: "",
+  cargo_weight: "",
+  planned_distance: "",
+  revenue: "",
+  remarks: "",
+});
+  useEffect(() => {
+  loadTrips();
+}, []);
+
+async function loadTrips() {
+  try {
+    const response = await getTrips();
+    console.log(response);
+    setTrips(response);
+  } catch (error) {
+    console.error(error);
+  }
+}
+async function handleSaveTrip() {
+  try {
+    if (editingTripId) {
+      await updateTrip(editingTripId, tripForm);
+    } else {
+      await addTrip(tripForm);
+    }
+
+    loadTrips();
+
+    setShowModal(false);
+    setEditingTripId(null);
+
+    setTripForm({
+      vehicle_id: "",
+      driver_id: "",
+      source: "",
+      destination: "",
+      cargo_weight: "",
+      planned_distance: "",
+      revenue: "",
+      remarks: "",
+    });
+
+  } catch (error) {
+    console.error(error);
+    alert("Failed to save trip");
+  }
+}
+function handleEditTrip(trip) {
+  setEditingTripId(trip.id);
+
+  setTripForm({
+    vehicle_id: trip.vehicle_id,
+    driver_id: trip.driver_id,
+    source: trip.source,
+    destination: trip.destination,
+    cargo_weight: trip.cargo_weight,
+    planned_distance: trip.planned_distance,
+    revenue: trip.revenue,
+    remarks: trip.remarks,
+  });
+
+  setShowModal(true);
+}
+async function handleDeleteTrip(id) {
+  if (!window.confirm("Delete this trip?")) return;
+
+  try {
+    await deleteTrip(id);
+    loadTrips();
+  } catch (error) {
+    console.error(error);
+  }
+}
 
   const columns = [
     "Source",
@@ -17,63 +104,33 @@ function Trip() {
     "Actions",
   ];
 
-  const data = [
-    [
-      "Ahmedabad",
-      "Surat",
-      "Van-01",
-      "Alex",
-      "450",
-      <span className="badge bg-warning text-dark">Draft</span>,
-      <>
-        <button className="btn btn-warning btn-sm me-2">
-          Edit
-        </button>
+const data = trips.map((trip) => [
+  trip.source,
+  trip.destination,
+  trip.vehicle_id,
+  trip.driver_id,
+  trip.cargo_weight,
 
-        <button className="btn btn-danger btn-sm">
-          Delete
-        </button>
-      </>,
-    ],
+  <span className="badge bg-primary">
+    {trip.status}
+  </span>,
 
-    [
-      "Rajkot",
-      "Vadodara",
-      "Truck-02",
-      "John",
-      "900",
-      <span className="badge bg-primary">On Trip</span>,
-      <>
-        <>
-    <button className="btn btn-outline-primary btn-sm me-2">
-        Edit
-    </button>
+  <>
+    <button
+    className="btn btn-warning btn-sm me-2"
+    onClick={() => handleEditTrip(trip)}
+>
+    Edit
+</button>
 
-    <button className="btn btn-outline-danger btn-sm">
-        Delete
-    </button>
-</>
-      </>,
-    ],
-
-    [
-      "Bhavnagar",
-      "Ahmedabad",
-      "Mini Van",
-      "David",
-      "300",
-      <span className="badge bg-success">Completed</span>,
-      <>
-        <button className="btn btn-warning btn-sm me-2">
-          Edit
-        </button>
-
-        <button className="btn btn-danger btn-sm">
-          Delete
-        </button>
-      </>,
-    ],
-  ];
+    <button
+    className="btn btn-danger btn-sm"
+    onClick={() => handleDeleteTrip(trip.id)}
+>
+    Delete
+</button>
+  </>,
+]);
 
   const filteredData = data.filter((trip) =>
     trip[0].toLowerCase().includes(search.toLowerCase())
@@ -101,9 +158,12 @@ function Trip() {
           </p>
         </div>
 
-        <button className="btn btn-primary px-4">
-          + Create Trip
-        </button>
+        <button
+  className="btn btn-primary px-4"
+  onClick={() => setShowModal(true)}
+>
+  + Create Trip
+</button>
 
       </div>
 
@@ -128,6 +188,103 @@ function Trip() {
       </div>
     </div>
     </div>
+    {showModal && (
+<div className="modal d-block" style={{background:"rgba(0,0,0,.5)"}}>
+<div className="modal-dialog">
+<div className="modal-content">
+
+<div className="modal-header">
+<h5>{editingTripId ? "Edit Trip" : "Create Trip"}</h5>
+
+<button
+className="btn-close"
+onClick={()=>setShowModal(false)}
+/>
+
+</div>
+
+<div className="modal-body">
+
+<input
+className="form-control mb-2"
+placeholder="Vehicle ID"
+value={tripForm.vehicle_id}
+onChange={(e)=>setTripForm({...tripForm,vehicle_id:e.target.value})}
+/>
+
+<input
+className="form-control mb-2"
+placeholder="Driver ID"
+value={tripForm.driver_id}
+onChange={(e)=>setTripForm({...tripForm,driver_id:e.target.value})}
+/>
+
+<input
+className="form-control mb-2"
+placeholder="Source"
+value={tripForm.source}
+onChange={(e)=>setTripForm({...tripForm,source:e.target.value})}
+/>
+
+<input
+className="form-control mb-2"
+placeholder="Destination"
+value={tripForm.destination}
+onChange={(e)=>setTripForm({...tripForm,destination:e.target.value})}
+/>
+
+<input
+className="form-control mb-2"
+placeholder="Cargo Weight"
+value={tripForm.cargo_weight}
+onChange={(e)=>setTripForm({...tripForm,cargo_weight:e.target.value})}
+/>
+
+<input
+className="form-control mb-2"
+placeholder="Planned Distance"
+value={tripForm.planned_distance}
+onChange={(e)=>setTripForm({...tripForm,planned_distance:e.target.value})}
+/>
+
+<input
+className="form-control mb-2"
+placeholder="Revenue"
+value={tripForm.revenue}
+onChange={(e)=>setTripForm({...tripForm,revenue:e.target.value})}
+/>
+
+<textarea
+className="form-control"
+placeholder="Remarks"
+value={tripForm.remarks}
+onChange={(e)=>setTripForm({...tripForm,remarks:e.target.value})}
+/>
+
+</div>
+
+<div className="modal-footer">
+
+<button
+className="btn btn-secondary"
+onClick={()=>setShowModal(false)}
+>
+Cancel
+</button>
+
+<button
+className="btn btn-primary"
+onClick={handleSaveTrip}
+>
+Save
+</button>
+
+</div>
+
+</div>
+</div>
+</div>
+)}
     </div>
   );
 }
