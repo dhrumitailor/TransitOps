@@ -96,8 +96,10 @@ async function handleDeleteFuel(id) {
   }
 }
   const filteredData = data.filter((fuel) =>
-    fuel[0].toLowerCase().includes(search.toLowerCase())
-  );
+  String(fuel[0])
+    .toLowerCase()
+    .includes(search.toLowerCase())
+);
 
     return (
   <div className="d-flex">

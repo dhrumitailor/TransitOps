@@ -2,7 +2,13 @@ const BASE_URL = "http://127.0.0.1:5000/api/expenses";
 
 export async function getExpenses() {
   const response = await fetch(BASE_URL);
-  return await response.json();
+   const result = await response.json();
+
+if (!response.ok) {
+  throw new Error(JSON.stringify(result));
+}
+
+return result;
 }
 
 export async function addExpense(expense) {
