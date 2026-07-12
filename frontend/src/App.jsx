@@ -1,7 +1,7 @@
-import Maintenance from "./pages/Maintenance";
+import Reports from "./pages/Reports";
 
 function App() {
-  return <Maintenance />;
+  return <Reports />;
 }
 
 export default App;
