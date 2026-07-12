@@ -13,6 +13,8 @@ from routes.fuel_routes import fuel_bp
 from routes.expense_routes import expense_bp
 from flask_jwt_extended import JWTManager
 from auth.auth_routes import auth_bp
+from routes.reports_routes import reports_bp
+
 
 app = Flask(__name__)
 jwt = JWTManager(app)
@@ -48,6 +50,7 @@ app.register_blueprint(
     auth_bp,
     url_prefix="/api"
 )
+app.register_blueprint(reports_bp, url_prefix="/api")
 
 @app.route("/")
 def home():

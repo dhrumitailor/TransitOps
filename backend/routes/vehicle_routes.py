@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
 
+from middleware.auth import role_required
 from services.vehicle_service import VehicleService
 
 vehicle_bp = Blueprint(
@@ -9,6 +11,13 @@ vehicle_bp = Blueprint(
 
 
 @vehicle_bp.route("/vehicles", methods=["GET"])
+@jwt_required()
+@role_required(
+    "Admin",
+    "Fleet Manager",
+    "Safety Officer",
+    "Financial Analyst"
+)
 def get_vehicles():
 
     search = request.args.get("search")
@@ -48,6 +57,13 @@ def get_vehicles():
 
 
 @vehicle_bp.route("/vehicles/<int:vehicle_id>", methods=["GET"])
+@jwt_required()
+@role_required(
+    "Admin",
+    "Fleet Manager",
+    "Safety Officer",
+    "Financial Analyst"
+)
 def get_vehicle(vehicle_id):
 
     vehicle = VehicleService.get_by_id(vehicle_id)
@@ -66,6 +82,11 @@ def get_vehicle(vehicle_id):
 
 
 @vehicle_bp.route("/vehicles", methods=["POST"])
+@jwt_required()
+@role_required(
+    "Admin",
+    "Fleet Manager"
+)
 def create_vehicle():
 
     data = request.get_json()
@@ -112,6 +133,11 @@ def create_vehicle():
 
 
 @vehicle_bp.route("/vehicles/<int:vehicle_id>", methods=["PUT"])
+@jwt_required()
+@role_required(
+    "Admin",
+    "Fleet Manager"
+)
 def update_vehicle(vehicle_id):
 
     vehicle = VehicleService.get_by_id(vehicle_id)
@@ -145,6 +171,8 @@ def update_vehicle(vehicle_id):
 
 
 @vehicle_bp.route("/vehicles/<int:vehicle_id>", methods=["DELETE"])
+@jwt_required()
+@role_required("Admin")
 def delete_vehicle(vehicle_id):
 
     vehicle = VehicleService.get_by_id(vehicle_id)

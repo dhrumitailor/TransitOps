@@ -1,11 +1,100 @@
+import { useEffect, useState } from "react";
+
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import { useState } from "react";
 import SearchBar from "../components/SearchBar";
 import Table from "../components/Table";
 
+import {
+  getDrivers,
+  addDriver,
+  updateDriver,
+  deleteDriver,
+} from "../services/driverService";
 function Driver() {
   const [search, setSearch] = useState("");
+  const [drivers, setDrivers] = useState([]);
+  const [editingDriverId, setEditingDriverId] = useState(null);
+
+  const [showModal, setShowModal] = useState(false);
+
+const [driverForm, setDriverForm] = useState({
+  name: "",
+  license_number: "",
+  license_category: "",
+  license_expiry: "",
+  contact_number: "",
+  safety_score: "",
+});
+useEffect(() => {
+  loadDrivers();
+}, []);
+
+async function loadDrivers() {
+  try {
+    const response = await getDrivers();
+    setDrivers(response.items);
+  } catch (error) {
+    console.error(error);
+  }
+}
+async function handleSaveDriver() {
+  try {
+    if (editingDriverId) {
+      await updateDriver(editingDriverId, driverForm);
+    } else {
+      await addDriver(driverForm);
+    }
+
+    setShowModal(false);
+    setEditingDriverId(null);
+
+    setDriverForm({
+      name: "",
+      license_number: "",
+      license_category: "",
+      license_expiry: "",
+      contact_number: "",
+      safety_score: "",
+    });
+
+    loadDrivers();
+  } catch (error) {
+    console.error(error);
+    alert("Failed to save driver.");
+  }
+}
+async function handleDeleteDriver(id) {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this driver?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+    await deleteDriver(id);
+    loadDrivers();
+  } catch (error) {
+    console.error(error);
+    alert("Failed to delete driver.");
+  }
+}
+function handleEditDriver(driver) {
+  setEditingDriverId(driver.id);
+
+  setDriverForm({
+    name: driver.name,
+    license_number: driver.license_number,
+    license_category: driver.license_category,
+    license_expiry: driver.license_expiry,
+    contact_number: driver.contact_number,
+    safety_score: driver.safety_score,
+  });
+
+  setShowModal(true);
+}
+
+
 
   const columns = [
     "Name",
@@ -16,58 +105,41 @@ function Driver() {
     "Actions",
   ];
 
-  const data = [
-    [
-      "Alex",
-      "DL12345",
-      "9876543210",
-      <span className="badge bg-success">Available</span>,
-      "96",
-      <>
-        <button className="btn btn-warning btn-sm me-2">
-          Edit
-        </button>
+const data = drivers.map((driver) => [
+  driver.name,
+  driver.license_number,
+  driver.contact_number,
 
-        <button className="btn btn-danger btn-sm">
-          Delete
-        </button>
-      </>,
-    ],
+  <span
+    className={`badge ${
+      driver.status === "Available"
+        ? "bg-success"
+        : driver.status === "On Trip"
+        ? "bg-primary"
+        : "bg-danger"
+    }`}
+  >
+    {driver.status}
+  </span>,
 
-    [
-      "John",
-      "DL56789",
-      "9876501234",
-      <span className="badge bg-primary">On Trip</span>,
-      "91",
-      <>
-        <button className="btn btn-warning btn-sm me-2">
-          Edit
-        </button>
+  driver.safety_score,
 
-        <button className="btn btn-danger btn-sm">
-          Delete
-        </button>
-      </>,
-    ],
+  <>
+    <button
+  className="btn btn-warning btn-sm me-2"
+  onClick={() => handleEditDriver(driver)}
+>
+  Edit
+</button>
 
-    [
-      "David",
-      "DL88991",
-      "9876512345",
-      <span className="badge bg-danger">Suspended</span>,
-      "85",
-      <>
-        <button className="btn btn-warning btn-sm me-2">
-          Edit
-        </button>
-
-        <button className="btn btn-danger btn-sm">
-          Delete
-        </button>
-      </>,
-    ],
-  ];
+    <button
+  className="btn btn-danger btn-sm"
+  onClick={() => handleDeleteDriver(driver.id)}
+>
+  Delete
+</button>
+  </>,
+]);
 const filteredData = data.filter((driver) =>
   driver[0].toLowerCase().includes(search.toLowerCase())
 );
@@ -93,8 +165,11 @@ const filteredData = data.filter((driver) =>
           </p>
         </div>
 
-        <button className="btn btn-primary px-4">
-    + Add Driver
+        <button
+  className="btn btn-primary px-4"
+  onClick={() => setShowModal(true)}
+>
+  + Add Driver
 </button>
 
       </div>
@@ -119,6 +194,124 @@ const filteredData = data.filter((driver) =>
 
 </div>
 </div></div>
+{showModal && (
+  <div
+    className="modal d-block"
+    tabIndex="-1"
+    style={{ background: "rgba(0,0,0,0.5)" }}
+  >
+    <div className="modal-dialog">
+      <div className="modal-content">
+
+        <div className="modal-header">
+<h5>
+  {editingDriverId ? "Edit Driver" : "Add Driver"}
+</h5>
+          <button
+            className="btn-close"
+            onClick={() => setShowModal(false)}
+          />
+        </div>
+
+        <div className="modal-body">
+
+          <input
+            className="form-control mb-3"
+            placeholder="Name"
+            value={driverForm.name}
+            onChange={(e) =>
+              setDriverForm({
+                ...driverForm,
+                name: e.target.value,
+              })
+            }
+          />
+
+          <input
+            className="form-control mb-3"
+            placeholder="License Number"
+            value={driverForm.license_number}
+            onChange={(e) =>
+              setDriverForm({
+                ...driverForm,
+                license_number: e.target.value,
+              })
+            }
+          />
+
+          <input
+            className="form-control mb-3"
+            placeholder="License Category"
+            value={driverForm.license_category}
+            onChange={(e) =>
+              setDriverForm({
+                ...driverForm,
+                license_category: e.target.value,
+              })
+            }
+          />
+
+          <input
+            type="date"
+            className="form-control mb-3"
+            value={driverForm.license_expiry}
+            onChange={(e) =>
+              setDriverForm({
+                ...driverForm,
+                license_expiry: e.target.value,
+              })
+            }
+          />
+
+          <input
+            className="form-control mb-3"
+            placeholder="Contact Number"
+            value={driverForm.contact_number}
+            onChange={(e) =>
+              setDriverForm({
+                ...driverForm,
+                contact_number: e.target.value,
+              })
+            }
+          />
+
+          <input
+            type="number"
+            className="form-control"
+            placeholder="Safety Score"
+            value={driverForm.safety_score}
+            onChange={(e) =>
+              setDriverForm({
+                ...driverForm,
+                safety_score: e.target.value,
+              })
+            }
+          />
+
+        </div>
+
+        <div className="modal-footer">
+
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowModal(false)}
+          >
+            Cancel
+          </button>
+
+          <button
+            className="btn btn-primary"
+            onClick={handleSaveDriver}
+          >
+            Save
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }
